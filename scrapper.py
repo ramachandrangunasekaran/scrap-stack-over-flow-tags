@@ -1,10 +1,13 @@
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
 import asyncio
-tags = []
+
+
+
 
 
 async def fetchAndParse(url):
+    tags = []
     uClient = uReq(url)
     page_html = uClient.read()
     uClient.close()
@@ -14,14 +17,18 @@ async def fetchAndParse(url):
     for singleTag in tagCell:
         tag_temp = singleTag.findAll("a", {"class": "post-tag"})
         tags.append(tag_temp[0].contents[1] if len(tag_temp[0].contents)> 1 else tag_temp[0].contents[0])
-    print(tags)
+    f = open("tags.txt", "a")
+    f.write(','.join(tags))
+    f.write('\n\n\n')
+    f.close()
     return True
 
 async def scrapperPage():
     for x in range(1628):
         url = "https://stackoverflow.com/tags?page="+str(x+1)+"&tab=popular"
+        print("page:"+ str(x+1))
         await fetchAndParse(url)
-    print(tags)
+   
         
     
 
